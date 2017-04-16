@@ -6,6 +6,7 @@ library(DAAG)
 library(fmsb)
 library(plyr)
 library(MASS)
+library(ridge)
 data = read.arff('C:/Users/karth/Documents/dataset_2216_machine_cpu.arff')
 head(data, 5)
 summary(data)
@@ -75,3 +76,24 @@ qqline(resid(mod_trans))
 plot(fitted(mod_trans), resid(mod_trans), pch=16)
 plot(fitted(mod_trans), rstudent(mod_trans), pch=16)
 Pred_R_Sq_trans <- 1-((press(mod_trans)/sum(anova(mod_trans)$'Sum Sq')))
+#Leverage Points hii > 2p/n
+data_trans$h_ii <- hatvalues(mod_trans)
+data_trans[data_trans$h_ii>(12/209),]
+#Influential Points with Cook's D
+data_trans$Cooks <- cooks.distance(mod_trans)
+data_trans[data_trans$Cooks>1,]
+max(data_trans$Cooks)
+#DFBEtas
+data_trans$DFBetas<- dfbetas(mod_trans)
+data_trans[abs(data_trans$DFBetas) > (2/sqrt(209))]
+#DFFits
+data_trans$DFFits <- dffits(mod_trans)
+data_trans[abs(data_trans$DFFits) > 2*(sqrt(6/209)),]
+#Cov Ratio
+data_trans$CovRatio <- covratio(mod_trans)
+data_trans[data_trans$CovRatio > 1,]
+#Ridge Regression
+mod_r <- linearRidge(class ~ MYCT + MMIN + MMAX + CACH + CHMAX, lambda="automatic", data=data_trans)
+summary(mod_r)
+VIF(mod_r)
+#Step AIC

@@ -7,6 +7,7 @@ library(fmsb)
 library(plyr)
 library(MASS)
 library(ridge)
+library(leaps)
 data = read.arff('C:/Users/karth/Documents/dataset_2216_machine_cpu.arff')
 head(data, 5)
 summary(data)
@@ -52,7 +53,7 @@ MSE <- mean((resid(modnew))^2)
 coef(modnew)
 press(modnew)
 confint(modnew)
-VIF(modnew)
+corrplot(cor(data_trans[1:7]), method = 'number')
 #Residual Analysis of New Model
 qqnorm(resid(modnew), pch=16)
 qqline(resid(modnew))
@@ -95,5 +96,15 @@ data_trans[data_trans$CovRatio > 1,]
 #Ridge Regression
 mod_r <- linearRidge(class ~ MYCT + MMIN + MMAX + CACH + CHMAX, lambda="automatic", data=data_trans)
 summary(mod_r)
-VIF(mod_r)
-#Step AIC
+vif(mod_r)
+kappa(mod_r)
+MSE_R <- mean((predict(mod_r, newdata=data_trans) - data_trans$class)^2)
+MSE_R
+plot(mod_r)
+
+#Forward, Backward and Step Selection
+null = lm(class~1, data = data_trans)
+full = lm(class~ MYCT + MMIN + MMAX + CACH + CHMAX + CHMIN, data = data_trans)
+step(null, scope=list(lower=null, upper=full), direction="forward")
+step(full, data=data_trans, direction="backward")
+step(null, scope = list(upper=full), data=data_trans, direction="both")

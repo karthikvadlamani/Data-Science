@@ -18,11 +18,11 @@ import numpy as np
 compound = []
 count = 0
 
-ckey = 'k1mVlz2E9eXBkd2kG7gF0VgkJ'
-csecret = 'iEfbXbtmQ9UqeY2TFTg2q76VOZFucOH3kvYUq9IWWiDZedv7wW'
+ckey = ''
+csecret = ''
 
-atoken = '38171112-2rvUP6sSmqOQDIhwBcPcioPd1lYCc8Bpok71lTyPh'
-asecret = '7uLK9eg00O8bvcvTU66OheZCCRKofARzkE86HlHFr8LfR'
+atoken = ''
+asecret = ''
 
 
 
